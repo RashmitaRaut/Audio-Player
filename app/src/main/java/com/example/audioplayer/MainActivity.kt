@@ -62,7 +62,7 @@ fun MyContent(){
     ) {
         Row {
            IconButton(onClick = {
-               var audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+               var audioUrl = "https://bit.ly/MridangaAudio"
 
                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
 
