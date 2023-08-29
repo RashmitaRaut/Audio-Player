@@ -1,8 +1,10 @@
 package com.example.audioplayer
 
 import android.annotation.SuppressLint
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.audioplayer.ui.theme.AudioPlayerTheme
+import java.lang.Exception
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,23 +52,52 @@ fun MainContent() {
 
 @Composable
 fun MyContent(){
-    val mContext = LocalContext.current
+    val ctx = LocalContext.current
 
-    val mMediaPlayer = MediaPlayer.create(mContext, R.raw.audio)
+    val mediaPlayer = MediaPlayer()
 
     Column(modifier = Modifier.fillMaxSize(),
     verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
-           IconButton(onClick = {mMediaPlayer.start()}) {
+           IconButton(onClick = {
+               var audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+
+               mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+
+               try {
+                   mediaPlayer.setDataSource(audioUrl)
+
+                   mediaPlayer.prepare()
+
+                   mediaPlayer.start()
+               }catch (e: Exception){
+                   e.printStackTrace()
+               }
+
+               Toast.makeText(ctx, "Strted", Toast.LENGTH_SHORT ).show()
+           }) {
                Icon(painter = painterResource(id = R.drawable.play_button),
                    contentDescription = "Play Button",
                    modifier = Modifier.size(100.dp)
                )
            }
 
-            IconButton(onClick = {mMediaPlayer.pause()}) {
+/*******************************************************************************************/
+            IconButton(onClick = {
+                if (mediaPlayer.isPlaying){
+                    mediaPlayer.stop()
+                    mediaPlayer.reset()
+                    mediaPlayer.release()
+
+                    Toast.makeText(ctx, "Paused", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(ctx, "Not played", Toast.LENGTH_SHORT)
+                }
+
+            }) {
                 Icon(painter = painterResource(id = R.drawable.pause_button),
                     contentDescription = "Pause Button",
                     modifier = Modifier.size(100.dp)
